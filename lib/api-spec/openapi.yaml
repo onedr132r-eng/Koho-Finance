@@ -1,0 +1,596 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: KOHO Fintech API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: account
+    description: Account operations
+  - name: transactions
+    description: Transaction operations
+  - name: credit
+    description: Credit score and building
+  - name: savings
+    description: Savings and goals
+  - name: features
+    description: Feature cards (Cover, Cashback, Crypto)
+
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /account:
+    get:
+      operationId: getAccount
+      tags: [account]
+      summary: Get account info
+      responses:
+        "200":
+          description: Account info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Account"
+
+  /account/summary:
+    get:
+      operationId: getAccountSummary
+      tags: [account]
+      summary: Dashboard summary - balances across all pockets
+      responses:
+        "200":
+          description: Summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountSummary"
+
+  /transactions:
+    get:
+      operationId: listTransactions
+      tags: [transactions]
+      summary: List all transactions grouped by date
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: dateRange
+          in: query
+          schema:
+            type: string
+            enum: [this_week, this_month]
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          schema:
+            type: integer
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [date_desc, date_asc, amount_desc, amount_asc]
+      responses:
+        "200":
+          description: Transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transaction"
+
+  /transactions/{id}:
+    get:
+      operationId: getTransaction
+      tags: [transactions]
+      summary: Get single transaction detail
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Transaction
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+
+  /transactions/recent:
+    get:
+      operationId: getRecentTransactions
+      tags: [transactions]
+      summary: Get recent transactions for home feed
+      responses:
+        "200":
+          description: Recent transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transaction"
+
+  /transactions/spending-summary:
+    get:
+      operationId: getSpendingSummary
+      tags: [transactions]
+      summary: Spending breakdown by category
+      responses:
+        "200":
+          description: Spending summary
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SpendingCategory"
+
+  /spending/insights:
+    get:
+      operationId: getSpendingInsights
+      tags: [transactions]
+      summary: Month-over-month spending insights with category breakdown and top merchants
+      responses:
+        "200":
+          description: Spending insights
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SpendingInsights"
+
+  /spending/monthly-trend:
+    get:
+      operationId: getMonthlyTrend
+      tags: [transactions]
+      summary: 6-month spending totals for trend widget
+      responses:
+        "200":
+          description: Monthly trend data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MonthlyTrendPoint"
+
+  /credit:
+    get:
+      operationId: getCreditProfile
+      tags: [credit]
+      summary: Get credit score and profile
+      responses:
+        "200":
+          description: Credit profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreditProfile"
+
+  /savings:
+    get:
+      operationId: getSavings
+      tags: [savings]
+      summary: Get all savings pockets
+      responses:
+        "200":
+          description: Savings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Savings"
+
+  /savings/goals:
+    get:
+      operationId: listGoals
+      tags: [savings]
+      summary: List savings goals
+      responses:
+        "200":
+          description: Goals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Goal"
+    post:
+      operationId: createGoal
+      tags: [savings]
+      summary: Create a savings goal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GoalInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Goal"
+
+  /features/cover:
+    get:
+      operationId: getCover
+      tags: [features]
+      summary: Get Cover (overdraft) info
+      responses:
+        "200":
+          description: Cover info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cover"
+
+  /features/cashback:
+    get:
+      operationId: getCashback
+      tags: [features]
+      summary: Get cashback info
+      responses:
+        "200":
+          description: Cashback
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cashback"
+
+  /features/crypto:
+    get:
+      operationId: getCrypto
+      tags: [features]
+      summary: Get crypto holdings
+      responses:
+        "200":
+          description: Crypto
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Crypto"
+
+  /plan:
+    get:
+      operationId: getPlan
+      tags: [account]
+      summary: Get current plan details
+      responses:
+        "200":
+          description: Plan
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Plan"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+
+    Account:
+      type: object
+      required: [id, name, email, spendableBalance, coverAvailable, coverLimit]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        spendableBalance:
+          type: number
+        coverAvailable:
+          type: number
+        coverLimit:
+          type: number
+        accountNumber:
+          type: string
+        transitNumber:
+          type: string
+        institutionNumber:
+          type: string
+        institutionName:
+          type: string
+        notificationCount:
+          type: integer
+
+    AccountSummary:
+      type: object
+      required: [totalBalance, spendable, vault, roundups, goals, interestRate]
+      properties:
+        totalBalance:
+          type: number
+        spendable:
+          type: number
+        vault:
+          type: number
+        roundups:
+          type: number
+        goals:
+          type: number
+        interestRate:
+          type: number
+        cashbackThisMonth:
+          type: number
+        cashbackAllTime:
+          type: number
+
+    Transaction:
+      type: object
+      required: [id, merchant, amount, category, date, time, status]
+      properties:
+        id:
+          type: integer
+        merchant:
+          type: string
+        amount:
+          type: number
+        category:
+          type: string
+        date:
+          type: string
+        time:
+          type: string
+        status:
+          type: string
+          enum: [completed, disputed, pending]
+        merchantIcon:
+          type: ["string", "null"]
+        merchantColor:
+          type: ["string", "null"]
+        isCredit:
+          type: boolean
+
+    SpendingCategory:
+      type: object
+      required: [category, amount, count]
+      properties:
+        category:
+          type: string
+        amount:
+          type: number
+        count:
+          type: integer
+
+    SpendingMonthSummary:
+      type: object
+      required: [total, categories]
+      properties:
+        total:
+          type: number
+        categories:
+          type: array
+          items:
+            $ref: "#/components/schemas/SpendingCategory"
+
+    TopMerchant:
+      type: object
+      required: [merchant, amount, count]
+      properties:
+        merchant:
+          type: string
+        amount:
+          type: number
+        count:
+          type: integer
+        merchantColor:
+          type: ["string", "null"]
+
+    MonthlyTrendPoint:
+      type: object
+      required: [month, label, total]
+      properties:
+        month:
+          type: string
+        label:
+          type: string
+        total:
+          type: number
+
+    SpendingInsights:
+      type: object
+      required: [currentMonth, previousMonth, thisMonth, lastMonth, topMerchants]
+      properties:
+        currentMonth:
+          type: string
+        previousMonth:
+          type: string
+        thisMonth:
+          $ref: "#/components/schemas/SpendingMonthSummary"
+        lastMonth:
+          $ref: "#/components/schemas/SpendingMonthSummary"
+        topMerchants:
+          type: array
+          items:
+            $ref: "#/components/schemas/TopMerchant"
+
+    CreditProfile:
+      type: object
+      required: [score, scoreChange, status, nextRange, ranges]
+      properties:
+        score:
+          type: integer
+        scoreChange:
+          type: integer
+        status:
+          type: string
+        nextRange:
+          type: integer
+        creditBuildingActive:
+          type: boolean
+        creditBuildingActionRequired:
+          type: boolean
+        securedCreditActive:
+          type: boolean
+        rentReportingActive:
+          type: boolean
+        ranges:
+          type: array
+          items:
+            $ref: "#/components/schemas/CreditRange"
+
+    CreditRange:
+      type: object
+      required: [label, min, max, color]
+      properties:
+        label:
+          type: string
+        min:
+          type: integer
+        max:
+          type: integer
+        color:
+          type: string
+
+    Savings:
+      type: object
+      required: [vault, roundups, interestRate, totalInterestEarned]
+      properties:
+        vault:
+          type: number
+        roundups:
+          type: number
+        interestRate:
+          type: number
+        totalInterestEarned:
+          type: number
+
+    Goal:
+      type: object
+      required: [id, name, targetAmount, currentAmount, emoji]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        targetAmount:
+          type: number
+        currentAmount:
+          type: number
+        emoji:
+          type: string
+        deadline:
+          type: ["string", "null"]
+
+    GoalInput:
+      type: object
+      required: [name, targetAmount, emoji]
+      properties:
+        name:
+          type: string
+        targetAmount:
+          type: number
+        emoji:
+          type: string
+        deadline:
+          type: ["string", "null"]
+
+    Cover:
+      type: object
+      required: [available, limit, isActive]
+      properties:
+        available:
+          type: number
+        limit:
+          type: number
+        isActive:
+          type: boolean
+        fee:
+          type: number
+
+    Cashback:
+      type: object
+      required: [totalEarned, earnedThisMonth, earnedLastMonth, rate]
+      properties:
+        totalEarned:
+          type: number
+        earnedThisMonth:
+          type: number
+        earnedLastMonth:
+          type: number
+        rate:
+          type: number
+
+    Crypto:
+      type: object
+      required: [balance, allTimeChange, holdings]
+      properties:
+        balance:
+          type: number
+        allTimeChange:
+          type: number
+        holdings:
+          type: array
+          items:
+            $ref: "#/components/schemas/CryptoHolding"
+
+    CryptoHolding:
+      type: object
+      required: [symbol, name, amount, value, change24h]
+      properties:
+        symbol:
+          type: string
+        name:
+          type: string
+        amount:
+          type: number
+        value:
+          type: number
+        change24h:
+          type: number
+
+    Plan:
+      type: object
+      required: [name, renewalDate, interestRate, totalBalance, spendable, vault]
+      properties:
+        name:
+          type: string
+        renewalDate:
+          type: string
+        interestRate:
+          type: number
+        totalBalance:
+          type: number
+        spendable:
+          type: number
+        vault:
+          type: number
+        roundups:
+          type: number
+        goals:
+          type: number
+        cashbackEarnedLastMonth:
+          type: number
+        cashbackAllTime:
+          type: number

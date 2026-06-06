@@ -1,0 +1,316 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-card-border: hsl(var(--card-border));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-popover-border: hsl(var(--popover-border));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-primary-border: var(--primary-border);
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-secondary-border: var(--secondary-border);
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-muted-border: var(--muted-border);
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-accent-border: var(--accent-border);
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-destructive-border: var(--destructive-border);
+
+  --color-sidebar: hsl(var(--sidebar));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-primary-border: var(--sidebar-primary-border);
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-accent-border: var(--sidebar-accent-border);
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  --font-sans: var(--app-font-sans);
+  --font-serif: var(--app-font-serif);
+  --font-mono: var(--app-font-mono);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --background: 250 100% 98%;
+  --foreground: 222.2 84% 4.9%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --card-border: 214.3 31.8% 91.4%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --popover-border: 214.3 31.8% 91.4%;
+
+  /* KOHO Purple */
+  --primary: 255 66% 58%;
+  --primary-foreground: 210 40% 98%;
+
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+
+  --accent: 210 40% 96.1%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 255 66% 58%;
+
+  --radius: 0.75rem;
+
+  --app-font-sans: 'Inter', system-ui, sans-serif;
+  --app-font-serif: Georgia, serif;
+  --app-font-mono: Menlo, monospace;
+}
+
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --card-border: 217.2 32.6% 17.5%;
+
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --popover-border: 217.2 32.6% 17.5%;
+
+  --primary: 255 66% 58%;
+  --primary-foreground: 210 40% 98%;
+
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 255 66% 58%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    overscroll-behavior: none;
+  }
+}
+
+/* ─── Phone Frame Root ─── */
+/* Mobile (≤430px): full screen, no chrome, respect safe areas */
+.phone-frame-root {
+  width: 100%;
+  height: 100dvh;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  background: #F5F3FF;
+}
+
+.phone-frame-shell {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #F5F3FF;
+  position: relative;
+  /* Top safe area for real devices with notches/Dynamic Island */
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Status bar hidden on real mobile (system provides its own) */
+.phone-frame-statusbar {
+  display: none;
+}
+
+.phone-frame-notch {
+  display: none;
+}
+
+.phone-frame-screen {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.phone-frame-home-indicator {
+  display: none;
+  /* Bottom safe area on real mobile */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Desktop (>430px): centered phone shell with hardware chrome */
+@media (min-width: 431px) {
+  body {
+    background: #0f0f1a;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #root {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 100vh;
+    padding: 2rem 0;
+  }
+
+  .phone-frame-root {
+    width: auto;
+    height: auto;
+    background: transparent;
+  }
+
+  .phone-frame-shell {
+    position: relative;
+    width: 375px;
+    height: 812px;
+    border-radius: 52px;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.10),
+      0 0 0 10px #1c1c1e,
+      0 0 0 11.5px rgba(255,255,255,0.06),
+      0 40px 100px rgba(0,0,0,0.75),
+      0 10px 30px rgba(0,0,0,0.5);
+    overflow: hidden;
+    background: #F5F3FF;
+    /* No safe-area padding needed inside the simulated frame */
+    padding-top: 0;
+  }
+
+  /* Status bar visible inside desktop frame */
+  .phone-frame-statusbar {
+    display: block;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 10;
+    /* Sits below the notch */
+    padding-top: 6px;
+  }
+
+  /* Dynamic island */
+  .phone-frame-notch {
+    display: block;
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 34px;
+    background: #1c1c1e;
+    border-radius: 24px;
+    z-index: 100;
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.6);
+  }
+
+  .phone-frame-home-indicator {
+    display: flex;
+    height: 28px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    padding-bottom: 0;
+  }
+
+  .phone-frame-home-indicator::after {
+    content: "";
+    display: block;
+    width: 134px;
+    height: 5px;
+    background: rgba(0,0,0,0.22);
+    border-radius: 4px;
+  }
+}
+
+/* ─── Tappable row pressed state ─── */
+.tap-row {
+  transition: background-color 0.1s ease, transform 0.1s ease;
+  cursor: pointer;
+}
+.tap-row:active {
+  background-color: rgba(91, 63, 204, 0.06);
+  transform: scale(0.985);
+}
+
+/* ─── Tap highlight suppress ─── */
+.tap-highlight-none {
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* ─── Safe area bottom padding utility ─── */
+.pb-safe-or-2 {
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px);
+}
+
+/* ─── Confetti animation ─── */
+@keyframes confettiFall {
+  0%   { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+.animate-confetti {
+  animation: confettiFall linear forwards;
+}
+
+/* ─── Bounce-in animation ─── */
+@keyframes bounceIn {
+  0%   { transform: scale(0.3); opacity: 0; }
+  50%  { transform: scale(1.1); opacity: 1; }
+  70%  { transform: scale(0.95); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-bounce-in {
+  animation: bounceIn 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
+}
